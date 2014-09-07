@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=i3ipcengine
+Comment=i3 window manager ipc engine
+Type=Service
+Icon=preferences-system-windows
+
+X-KDE-ServiceTypes=Plasma/DataEngine
+X-KDE-Library=plasma_dataengine_i3ipc
+X-Plasma-EngineName=i3ipc
+X-KDE-PluginInfo-Author=Martin Yrjölä
+X-KDE-PluginInfo-Email=martin@martinyrjola.net
+X-KDE-PluginInfo-Name=i3ipc
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Category=Examples
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=MIT
+X-KDE-PluginInfo-EnabledByDefault=true

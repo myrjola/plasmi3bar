@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Plasmi3bar
+Icon=xorg
+Type=Service
+X-KDE-ParentApp=
+X-KDE-PluginInfo-Author=Martin Yrjölä
+X-KDE-PluginInfo-Email=martin.yrjola@gmail.com
+X-KDE-PluginInfo-License=MIT
+X-KDE-PluginInfo-Name=net.martinyrjola.plasmi3bar
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=plasma.kde.org
+X-KDE-ServiceTypes=Plasma/Applet
+X-Plasma-API=declarativeappletscript
+X-KDE-PluginInfo-Category=Windows and Tasks
+
+X-Plasma-MainScript=ui/main.qml
+X-Plasma-RemoteLocation=
