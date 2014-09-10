@@ -25,8 +25,7 @@ void I3Socket::sendMessage(quint32 messageType, const char *payload)
     message.append((const char *) &messageLength, sizeof(messageLength));
     message.append((const char *) &messageType, sizeof(messageType));
     message.append(payload);
-    qint64 writtenLength = this->write(message);
-    qDebug() << writtenLength << " bytes written.";
+    this->write(message);
     this->flush();
 }
 

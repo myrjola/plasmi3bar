@@ -40,21 +40,45 @@ void I3IPCEngine::bytesWritten(qint64 bytes)
 void I3IPCEngine::readyRead()
 {
     qDebug() << "reading...";
-    QByteArray reply = m_i3Socket.readLine();
-    quint32 offset = strlen(I3_IPC_MAGIC) + sizeof(quint32);
+    uint magicLength = qstrlen(I3_IPC_MAGIC);
 
+    QByteArray magicHeader = m_i3Socket.read(magicLength);
+    if ((uint) magicHeader.length() != magicLength || qstrncmp(magicHeader.constData(), I3_IPC_MAGIC, magicLength))
+    {
+        qWarning() << "Invalid magic header: " << magicHeader;
+        m_i3Socket.readAll(); // Flush the buffer
+        return;
+    };
+    QDataStream stream(&m_i3Socket);
+    stream.setByteOrder(QDataStream::LittleEndian);
+    qint32 replyLength;
+    stream >> replyLength;
     qint32 replyType;
-    memcpy(&replyType, reply.constData() + offset, sizeof(quint32));
+    stream >> replyType;
+    qDebug() << "Expecting " << replyLength << " bytes of type " << replyType;
 
-    reply.remove(0, strlen(I3_IPC_MAGIC) + 2 * sizeof(quint32));
+    QByteArray reply = m_i3Socket.read(replyLength);
     qDebug() << "Received " << reply.length() << " bytes with content: " << reply;
+    if (reply.length() < (int) replyLength) {
+        qWarning("Expected more from reply! Waiting for more...");
+        qWarning() << "Socket error: " << m_i3Socket.error();
+        if (m_i3Socket.waitForReadyRead(1000)) {
+            reply.append(m_i3Socket.read(replyLength - reply.length()));
+            qDebug() << "Received " << reply.length() << " bytes with content: " << reply;
+        } else {
+            qDebug() << "Timeout when waiting for more content!";
+        }
+    }
 
     if (replyType == I3_IPC_EVENT_WORKSPACE) {
         qDebug() << "Update workspace!";
         m_i3Socket.sendMessage(I3_IPC_MESSAGE_TYPE_GET_WORKSPACES, "");
-        return;
+    } else {
+        newLine(QString(reply));
     }
-    newLine(QString(reply));
+    if (m_i3Socket.bytesAvailable()) {
+        emit m_i3Socket.readyRead();
+    }
 }
 
 void I3IPCEngine::newLine(const QString &line)
